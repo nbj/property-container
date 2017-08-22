@@ -16,6 +16,11 @@
             "Nbj\\": "src/"
         }
     },
+    "config": {
+        "platform": {
+            "php": "5.3.3"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

@@ -1,0 +1,21 @@
+{
+    "name": "nbj/property-container",
+    "description": "Utility library for making class that can contain properties",
+    "keywords": ["container", "properties", "property"],
+    "type": "library",
+    "license": "GNU",
+    "authors": [
+        {
+            "name": "Nikolaj Boel Jensen",
+            "email": "nbj@cego.dk"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Nbj\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

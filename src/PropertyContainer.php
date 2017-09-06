@@ -2,6 +2,7 @@
 
 namespace Nbj;
 
+use BadMethodCallException;
 use Doctrine\Common\Inflector\Inflector;
 
 class PropertyContainer

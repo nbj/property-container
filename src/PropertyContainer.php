@@ -83,7 +83,7 @@ class PropertyContainer
      * @param string $property
      * @param mixed $value
      *
-     * @return Chunk
+     * @return $this
      */
     public function set($property, $value)
     {

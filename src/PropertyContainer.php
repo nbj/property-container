@@ -105,6 +105,22 @@ class PropertyContainer
     }
 
     /**
+     * Makes the container forget it ever had a specific property
+     *
+     * @param string $property
+     *
+     * @return $this
+     */
+    public function forget($property)
+    {
+        if ($this->has($property)) {
+            unset($this->properties[$property]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Checks if a macro exists on the property container
      *
      * @param string $macro

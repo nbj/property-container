@@ -3,7 +3,7 @@
     "description": "Utility library for making class that can contain properties",
     "keywords": ["container", "properties", "property"],
     "type": "library",
-    "license": "GNU",
+    "license": "MIT",
     "authors": [
         {
             "name": "Nikolaj Boel Jensen",

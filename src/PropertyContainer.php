@@ -2,16 +2,32 @@
 
 namespace Nbj;
 
+use Closure;
 use BadMethodCallException;
+use InvalidArgumentException;
 use Doctrine\Common\Inflector\Inflector;
 
 class PropertyContainer
 {
-
-    /** @var array $properties Stores all the properties of the instance*/
+    /**
+     * Stores all the properties of the instance
+     *
+     * @var array $properties
+     */
     protected $properties = array();
 
-    /** @var array $macros Stores all the dynamically created methods*/
+    /**
+     * Stores the names of required properties. This is mainly used when inheriting from PropertyContainer
+     *
+     * @var array $requiredProperties
+     */
+    protected $requiredProperties = array();
+
+    /**
+     * Stores all the dynamically created methods
+     *
+     * @var array $macros
+     */
     protected static $macros = array();
 
     /**
@@ -34,10 +50,17 @@ class PropertyContainer
      */
     public static function make(array $data)
     {
-        $container = new static;
-        $container->fill($data);
+        return new static($data);
+    }
 
-        return $container;
+    /**
+     * PropertyContainer constructor.
+     *
+     * @param array $data
+     */
+    public function __construct(array $data = array())
+    {
+        $this->fill($data);
     }
 
     /**
@@ -49,6 +72,12 @@ class PropertyContainer
      */
     public function fill(array $data)
     {
+        foreach ($this->requiredProperties as $requiredProperty) {
+            if (!array_key_exists($requiredProperty, $data)) {
+                throw new InvalidArgumentException(sprintf('%s does not exist as a property in the provided data.', $requiredProperty));
+            }
+        }
+
         foreach ($data as $property => $value) {
             $this->set($property, $value);
         }
@@ -65,13 +94,14 @@ class PropertyContainer
      */
     public function get($property)
     {
-        if ($this->has($property)) {
-            return $this->properties[$property];
-        }
-
         $method = 'get' . Inflector::camelize($property);
+
         if (method_exists($this, $method) || array_key_exists($method, self::$macros)) {
             return $this->$method();
+        }
+
+        if ($this->has($property)) {
+            return $this->properties[$property];
         }
 
         return null;

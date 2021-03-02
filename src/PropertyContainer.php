@@ -3,9 +3,9 @@
 namespace Nbj;
 
 use Closure;
+use Carbon\Carbon;
 use BadMethodCallException;
 use InvalidArgumentException;
-use Doctrine\Common\Inflector\Inflector;
 
 class PropertyContainer
 {
@@ -22,6 +22,13 @@ class PropertyContainer
      * @var array $requiredProperties
      */
     protected $requiredProperties = array();
+
+    /**
+     * List of all properties that should be converted to Carbon instances
+     *
+     * @var array
+     */
+    protected $dateProperties = array();
 
     /**
      * Stores all the dynamically created methods
@@ -94,17 +101,22 @@ class PropertyContainer
      */
     public function get($property)
     {
-        $method = 'get' . Inflector::camelize($property);
+        $method = 'get' . Str::toPascal($property);
 
         if (method_exists($this, $method) || array_key_exists($method, self::$macros)) {
             return $this->$method();
         }
 
-        if ($this->has($property)) {
-            return $this->properties[$property];
+        if ($this->doesNotHave($property)) {
+            return null;
         }
 
-        return null;
+        // Checks for date properties and converts them to Carbon instances
+        if (in_array($property, $this->dateProperties)) {
+            return Carbon::parse($this->properties[$property]);
+        }
+
+        return $this->properties[$property];
     }
 
     /**
@@ -132,6 +144,18 @@ class PropertyContainer
     public function has($property)
     {
         return isset($this->properties[$property]);
+    }
+
+    /**
+     * Syntactic sugar for negating has() - Checks if a property is NOT set
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function doesNotHave($property)
+    {
+        return ! $this->has($property);
     }
 
     /**

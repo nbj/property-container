@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "doctrine/inflector": "*"
+        "nbj/strings": "^0.0.1",
+        "nesbot/carbon": "^2.45"
     },
     "autoload": {
         "psr-4": {

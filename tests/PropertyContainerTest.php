@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Nbj\PropertyContainer;
 use PHPUnit\Framework\TestCase;
 
@@ -176,6 +177,17 @@ class PropertyContainerTest extends TestCase
         $this->assertTrue($containerA->has('some_property'));
         $this->assertTrue($containerA->has('some_other_property'));
     }
+
+    /** @test */
+    public function it_can_auto_convert_properties_designated_as_dates_to_carbon_instances()
+    {
+        $example = Example::make([
+            'some_required_property' => 'is-required-by-out-test-class',
+            'test_date'              => '1970-01-01'
+        ]);
+
+        $this->assertInstanceOf(Carbon::class, $example->test_date);
+    }
 }
 
 /**
@@ -192,6 +204,15 @@ class Example extends PropertyContainer
      */
     protected $requiredProperties = [
         'some_required_property'
+    ];
+
+    /**
+     * List of all properties that should be converted to Carbon instances
+     *
+     * @var array
+     */
+    protected $dateProperties = [
+        'test_date'
     ];
 
     /**

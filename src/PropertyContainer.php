@@ -246,6 +246,28 @@ class PropertyContainer
     }
 
     /**
+     * Overload isset
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return $this->has($name);
+    }
+
+    /**
+     * Overload unset
+     *
+     * @param $name
+     */
+    public function __unset($name)
+    {
+        $this->forget($name);
+    }
+
+    /**
      * Makes sure macro methods are called if they exist
      *
      * @param string $method

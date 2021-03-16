@@ -5,7 +5,8 @@ namespace Nbj;
 use Closure;
 use Carbon\Carbon;
 use BadMethodCallException;
-use InvalidArgumentException;
+use Nbj\Validation\PropertyValidation;
+use Nbj\Validation\PropertyValidationException;
 
 class PropertyContainer
 {
@@ -17,11 +18,20 @@ class PropertyContainer
     protected $properties = array();
 
     /**
-     * Stores the names of required properties. This is mainly used when inheriting from PropertyContainer
+     * Stores a list of properties, and validation rules to apply - This is only used when inheriting from PropertyContainer
      *
-     * @var array $requiredProperties
+     * Structure:
+     *  [
+     *      'property_name' => ['required', 'numeric'],
+     *  ]
+     *
+     * Properties are only validated if present, unless the required validation rule is applied.
+     *
+     * @see PropertyValidation for a list of validation rules
+     *
+     * @var array $validatedProperties
      */
-    protected $requiredProperties = array();
+    protected $validatedProperties = array();
 
     /**
      * List of all properties that should be converted to Carbon instances
@@ -79,10 +89,8 @@ class PropertyContainer
      */
     public function fill(array $data)
     {
-        foreach ($this->requiredProperties as $requiredProperty) {
-            if (!array_key_exists($requiredProperty, $data)) {
-                throw new InvalidArgumentException(sprintf('%s does not exist as a property in the provided data.', $requiredProperty));
-            }
+        foreach ($this->validatedProperties as $propertyName => $validationRules) {
+            $this->validateProperty($propertyName, $validationRules, $data);
         }
 
         foreach ($data as $property => $value) {
@@ -90,6 +98,106 @@ class PropertyContainer
         }
 
         return $this;
+    }
+
+    /**
+     * Runs all validation rules for a property, and throws an exception if any validation rule fails.
+     *
+     * @param $propertyName
+     * @param $validationRules
+     * @param $data
+     *
+     * @throws PropertyValidationException
+     */
+    protected function validateProperty($propertyName, $validationRules, $data)
+    {
+        // If the property is not present, or not required then we dont run validation steps
+        if ($this->shouldNotValidateProperty($propertyName, $validationRules, $data)) {
+            return;
+        }
+
+        // If the property is not present, but required then fail validation
+        if ($this->isAMissingAndRequiredProperty($propertyName, $validationRules, $data)) {
+            throw new PropertyValidationException($propertyName, 'required');
+        }
+
+        // Run all validation rules
+        foreach ($validationRules as $validationRule) {
+            $this->runValidationRule($validationRule, $propertyName, $data[$propertyName]);
+        }
+    }
+
+    /**
+     * Runs a single validation rule on a property, and throws and exception if the rule fails
+     *
+     * @param string|callable $validationRule
+     * @param string $propertyName
+     * @param mixed $propertyValue
+     */
+    protected function runValidationRule($validationRule, $propertyName, $propertyValue)
+    {
+        // The required validation rule is applied as the first validation rule if present
+        // so we can simply skip it here
+        if ($validationRule == 'required') {
+            return;
+        }
+
+        // If the validation rule given is not a callable, but a predefined rule
+        // Then we run that validation rule
+        if ( ! is_callable($validationRule)) {
+            PropertyValidation::validate($validationRule, $propertyName, $propertyValue);
+
+            return;
+        }
+
+        // If the validation rule is a custom callable, then run it
+        // and if it returns false then fail the validation step
+        if ( ! $validationRule($propertyValue)) {
+            throw new PropertyValidationException($propertyName, $validationRule);
+        }
+    }
+
+    /**
+     * Returns true if the property is both required, and not present in the data array
+     *
+     * @param $propertyName
+     * @param $validationRules
+     * @param $data
+     *
+     * @return bool
+     */
+    protected function isAMissingAndRequiredProperty($propertyName, $validationRules, $data)
+    {
+        return $this->isARequiredProperty($validationRules) && ! array_key_exists($propertyName, $data);
+    }
+
+    /**
+     * Returns true if a property should not be validated.
+     *
+     * A property should only be validated if it is present, or if it is marked as required
+     *
+     * @param $propertyName
+     * @param $validationRules
+     * @param $data
+     *
+     * @return bool
+     */
+    protected function shouldNotValidateProperty($propertyName, $validationRules, $data)
+    {
+        return ! array_key_exists($propertyName, $data)
+            && ! $this->isARequiredProperty($validationRules);
+    }
+
+    /**
+     * Returns true if the validated property is required
+     *
+     * @param $validationRules
+     *
+     * @return bool
+     */
+    protected function isARequiredProperty($validationRules)
+    {
+        return in_array('required', $validationRules);
     }
 
     /**

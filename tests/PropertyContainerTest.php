@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Nbj\PropertyContainer;
 use PHPUnit\Framework\TestCase;
+use Nbj\Validation\PropertyValidationException;
 
 class PropertyContainerTest extends TestCase
 {
@@ -101,8 +102,8 @@ class PropertyContainerTest extends TestCase
                 'some_property' => 'some_value'
             ]);
         } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
-            $this->assertEquals('some_required_property does not exist as a property in the provided data.', $exception->getMessage());
+            $this->assertInstanceOf(PropertyValidationException::class, $exception);
+            $this->assertEquals('[some_required_property] failed validation rule [required]', $exception->getMessage());
         }
 
         $this->assertNull($container);
@@ -188,6 +189,76 @@ class PropertyContainerTest extends TestCase
 
         $this->assertInstanceOf(Carbon::class, $example->test_date);
     }
+
+    /** @test */
+    public function it_can_successfully_validate_fields()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_not_null_property' => 0,
+            'some_integer_property'  => 100,
+            'some_numeric_property'  => '12.52',
+            'some_date_property'     => '2021-01-01 01:00:00',
+        ]);
+
+        // Assert
+        $this->assertTrue(true); // No exceptions were thrown
+    }
+
+    /** @test */
+    public function it_can_fail_null_validation()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_not_null_property' => null,
+        ]);
+    }
+
+    /** @test */
+    public function it_can_fail_integer_property_validation()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_integer_property'  => 125.25,
+        ]);
+    }
+
+    /** @test */
+    public function it_can_fail_numeric_property_validation()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_numeric_property'  => ['123', "abc"],
+        ]);
+    }
+
+    /** @test */
+    public function it_can_fail_date_property_validation()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_numeric_property'  => 'Not a date',
+        ]);
+    }
 }
 
 /**
@@ -198,12 +269,25 @@ class PropertyContainerTest extends TestCase
 class Example extends PropertyContainer
 {
     /**
-     * Stores the names of required properties. This is mainly used when inheriting from PropertyContainer
+     * Stores a list of properties, and validation rules to apply - This is only used when inheriting from PropertyContainer
      *
-     * @var array $requiredProperties
+     * Structure:
+     *  [
+     *      'property_name' => ['required', 'numeric'],
+     *  ]
+     *
+     * Properties are only validated if present, unless the required validation rule is applied.
+     *
+     * @see PropertyValidation for a list of validation rules
+     *
+     * @var array $validatedProperties
      */
-    protected $requiredProperties = [
-        'some_required_property'
+    protected $validatedProperties = [
+        'some_required_property' => ['required'],
+        'some_not_null_property' => ['notNull'],
+        'some_integer_property'  => ['int'],
+        'some_numeric_property'  => ['numeric'],
+        'some_date_property'     => ['date'],
     ];
 
     /**

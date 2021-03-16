@@ -97,7 +97,7 @@ class PropertyValidation
         }
 
         if ( ! static::$method($propertyValue)) {
-            throw new PropertyValidationException($propertyName, $propertyValue);
+            throw new PropertyValidationException($propertyName, $rule);
         }
     }
 }

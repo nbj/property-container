@@ -153,7 +153,7 @@ class PropertyContainer
         // If the validation rule is a custom callable, then run it
         // and if it returns false then fail the validation step
         if ( ! $validationRule($propertyValue)) {
-            throw new PropertyValidationException($propertyName, $propertyValue);
+            throw new PropertyValidationException($propertyName, $validationRule);
         }
     }
 

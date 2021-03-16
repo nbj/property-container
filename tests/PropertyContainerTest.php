@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Nbj\PropertyContainer;
 use PHPUnit\Framework\TestCase;
+use Nbj\Validation\PropertyValidationException;
 
 class PropertyContainerTest extends TestCase
 {
@@ -101,8 +102,8 @@ class PropertyContainerTest extends TestCase
                 'some_property' => 'some_value'
             ]);
         } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
-            $this->assertEquals('some_required_property does not exist as a property in the provided data.', $exception->getMessage());
+            $this->assertInstanceOf(PropertyValidationException::class, $exception);
+            $this->assertEquals('[some_required_property] failed validation rule [required]', $exception->getMessage());
         }
 
         $this->assertNull($container);
@@ -200,10 +201,10 @@ class Example extends PropertyContainer
     /**
      * Stores the names of required properties. This is mainly used when inheriting from PropertyContainer
      *
-     * @var array $requiredProperties
+     * @var array $validatedProperties
      */
-    protected $requiredProperties = [
-        'some_required_property'
+    protected $validatedProperties = [
+        'some_required_property' => ['required']
     ];
 
     /**

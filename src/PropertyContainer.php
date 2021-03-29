@@ -161,9 +161,9 @@ class PropertyContainer
     /**
      * Returns true if the property is both required, and not present in the data array
      *
-     * @param $propertyName
-     * @param $validationRules
-     * @param $data
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
      *
      * @return bool
      */
@@ -177,9 +177,9 @@ class PropertyContainer
      *
      * A property should only be validated if it is present, or if it is marked as required
      *
-     * @param $propertyName
-     * @param $validationRules
-     * @param $data
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
      *
      * @return bool
      */
@@ -192,9 +192,9 @@ class PropertyContainer
     /**
      * Returns true if a property is not present, and not required
      *
-     * @param $propertyName
-     * @param $validationRules
-     * @param $data
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
      *
      * @return bool
      */
@@ -207,9 +207,9 @@ class PropertyContainer
     /**
      * Returns true if a property is null a nullable
      *
-     * @param $propertyName
-     * @param $validationRules
-     * @param $data
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
      *
      * @return bool
      */

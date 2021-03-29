@@ -205,7 +205,7 @@ class PropertyContainer
     }
 
     /**
-     * Returns true if a property is not present, and not required
+     * Returns true if a property is null a nullable
      *
      * @param $propertyName
      * @param $validationRules

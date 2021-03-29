@@ -112,7 +112,7 @@ class PropertyContainer
     protected function validateProperty($propertyName, $validationRules, $data)
     {
         // If the property is not present, or not required then we dont run validation steps
-        // Or if it is null, and nullable
+        // or if it is null, and nullable
         if ($this->shouldNotValidateProperty($propertyName, $validationRules, $data)) {
             return;
         }

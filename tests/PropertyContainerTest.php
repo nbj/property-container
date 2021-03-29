@@ -259,6 +259,64 @@ class PropertyContainerTest extends TestCase
             'some_numeric_property'  => 'Not a date',
         ]);
     }
+
+    /** @test */
+    public function it_accepts_null_for_a_nullable_required_string_property()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property'                 => 'some random value',
+            'some_required_nullable_string_property' => null,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_accepts_no_value_for_a_nullable_required_string_property()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property'                 => 'some random value',
+//            'some_required_nullable_string_property' => null,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_accepts_a_string_for_a_nullable_required_string_property()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property'                 => 'some random value',
+            'some_required_nullable_string_property' => 'some string',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_an_int_for_a_nullable_required_string_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property'                 => 'some random value',
+            'some_required_nullable_string_property' => 123,
+        ]);
+    }
 }
 
 /**
@@ -283,11 +341,12 @@ class Example extends PropertyContainer
      * @var array $validatedProperties
      */
     protected $validatedProperties = [
-        'some_required_property' => ['required'],
-        'some_not_null_property' => ['notNull'],
-        'some_integer_property'  => ['int'],
-        'some_numeric_property'  => ['numeric'],
-        'some_date_property'     => ['date'],
+        'some_required_property'                 => ['required'],
+        'some_not_null_property'                 => ['notNull'],
+        'some_integer_property'                  => ['int'],
+        'some_numeric_property'                  => ['numeric'],
+        'some_date_property'                     => ['date'],
+        'some_required_nullable_string_property' => ['required', 'nullable', 'string'],
     ];
 
     /**

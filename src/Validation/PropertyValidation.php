@@ -82,6 +82,18 @@ class PropertyValidation
     }
 
     /**
+     * The property must be a string
+     *
+     * @param mixed $propertyValue
+     *
+     * @return bool
+     */
+    public static function ruleString($propertyValue)
+    {
+        return is_string($propertyValue);
+    }
+
+    /**
      * Runs a validation rule on a property, and throws an exception if the validation failed.
      *
      * @param $rule

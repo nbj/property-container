@@ -112,6 +112,7 @@ class PropertyContainer
     protected function validateProperty($propertyName, $validationRules, $data)
     {
         // If the property is not present, or not required then we dont run validation steps
+        // or if it is null, and nullable
         if ($this->shouldNotValidateProperty($propertyName, $validationRules, $data)) {
             return;
         }
@@ -136,9 +137,9 @@ class PropertyContainer
      */
     protected function runValidationRule($validationRule, $propertyName, $propertyValue)
     {
-        // The required validation rule is applied as the first validation rule if present
-        // so we can simply skip it here
-        if ($validationRule == 'required') {
+        // The required and nullable validation rules is applied as the first validation rules if present
+        // so we can simply skip them here
+        if ($validationRule == 'required' || $validationRule == 'nullable') {
             return;
         }
 
@@ -160,15 +161,15 @@ class PropertyContainer
     /**
      * Returns true if the property is both required, and not present in the data array
      *
-     * @param $propertyName
-     * @param $validationRules
-     * @param $data
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
      *
      * @return bool
      */
     protected function isAMissingAndRequiredProperty($propertyName, $validationRules, $data)
     {
-        return $this->isARequiredProperty($validationRules) && ! array_key_exists($propertyName, $data);
+        return $this->propertyIsRequired($validationRules) && ! array_key_exists($propertyName, $data);
     }
 
     /**
@@ -176,16 +177,48 @@ class PropertyContainer
      *
      * A property should only be validated if it is present, or if it is marked as required
      *
-     * @param $propertyName
-     * @param $validationRules
-     * @param $data
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
      *
      * @return bool
      */
     protected function shouldNotValidateProperty($propertyName, $validationRules, $data)
     {
+        return $this->propertyIsNotPresentAndNotRequired($propertyName, $validationRules, $data)
+            || $this->propertyIsNullAndNullable($propertyName, $validationRules, $data);
+    }
+
+    /**
+     * Returns true if a property is not present, and not required
+     *
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function propertyIsNotPresentAndNotRequired($propertyName, $validationRules, $data)
+    {
         return ! array_key_exists($propertyName, $data)
-            && ! $this->isARequiredProperty($validationRules);
+            && ! $this->propertyIsRequired($validationRules);
+    }
+
+    /**
+     * Returns true if a property is null a nullable
+     *
+     * @param string $propertyName
+     * @param array $validationRules
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function propertyIsNullAndNullable($propertyName, $validationRules, $data)
+    {
+        $propertyIsNull = ! isset($data[$propertyName]);
+
+        return $propertyIsNull
+            && $this->propertyIsNullable($validationRules);
     }
 
     /**
@@ -195,9 +228,21 @@ class PropertyContainer
      *
      * @return bool
      */
-    protected function isARequiredProperty($validationRules)
+    protected function propertyIsRequired($validationRules)
     {
         return in_array('required', $validationRules);
+    }
+
+    /**
+     * Returns true if the validated property is required
+     *
+     * @param $validationRules
+     *
+     * @return bool
+     */
+    protected function propertyIsNullable($validationRules)
+    {
+        return in_array('nullable', $validationRules);
     }
 
     /**

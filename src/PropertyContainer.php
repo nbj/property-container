@@ -169,7 +169,7 @@ class PropertyContainer
      */
     protected function isAMissingAndRequiredProperty($propertyName, $validationRules, $data)
     {
-        return $this->isARequiredProperty($validationRules) && ! array_key_exists($propertyName, $data);
+        return $this->propertyIsRequired($validationRules) && ! array_key_exists($propertyName, $data);
     }
 
     /**
@@ -201,7 +201,7 @@ class PropertyContainer
     protected function propertyIsNotPresentAndNotRequired($propertyName, $validationRules, $data)
     {
         return ! array_key_exists($propertyName, $data)
-            && ! $this->isARequiredProperty($validationRules);
+            && ! $this->propertyIsRequired($validationRules);
     }
 
     /**
@@ -218,7 +218,7 @@ class PropertyContainer
         $propertyIsNull = ! isset($data[$propertyName]);
 
         return $propertyIsNull
-            && $this->isANullableProperty($validationRules);
+            && $this->propertyIsNullable($validationRules);
     }
 
     /**
@@ -228,7 +228,7 @@ class PropertyContainer
      *
      * @return bool
      */
-    protected function isARequiredProperty($validationRules)
+    protected function propertyIsRequired($validationRules)
     {
         return in_array('required', $validationRules);
     }
@@ -240,7 +240,7 @@ class PropertyContainer
      *
      * @return bool
      */
-    protected function isANullableProperty($validationRules)
+    protected function propertyIsNullable($validationRules)
     {
         return in_array('nullable', $validationRules);
     }

@@ -94,6 +94,18 @@ class PropertyValidation
     }
 
     /**
+     * The property must be an email
+     *
+     * @param $propertyValue
+     *
+     * @return mixed
+     */
+    public static function ruleEmail($propertyValue)
+    {
+        return filter_var($propertyValue, FILTER_VALIDATE_EMAIL);
+    }
+
+    /**
      * Runs a validation rule on a property, and throws an exception if the validation failed.
      *
      * @param $rule

@@ -291,6 +291,32 @@ class PropertyContainerTest extends TestCase
     }
 
     /** @test */
+    public function it_can_accept_a_valid_email()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_email_property' => 'testing@email.com',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_an_invalid_email()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_email_property' => 'testingemail.com',
+        ]);
+    }
+
+    /** @test */
     public function it_accepts_a_string_for_a_nullable_required_string_property()
     {
         // Arrange
@@ -347,6 +373,7 @@ class Example extends PropertyContainer
         'some_numeric_property'                  => ['numeric'],
         'some_date_property'                     => ['date'],
         'some_required_nullable_string_property' => ['required', 'nullable', 'string'],
+        'some_email_property'                    => ['email']
     ];
 
     /**

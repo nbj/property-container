@@ -12,7 +12,7 @@ class PropertyContainerTest extends TestCase
     {
         $container = PropertyContainer::make([
             'a_property'       => 'a_value',
-            'another_property' => 'another_value'
+            'another_property' => 'another_value',
         ]);
 
         $this->assertInstanceOf('Nbj\PropertyContainer', $container);
@@ -20,10 +20,10 @@ class PropertyContainerTest extends TestCase
     }
 
     /** @test */
-    public function it_can_contain_mutator_methods ()
+    public function it_can_contain_mutator_methods()
     {
         $example = Example::make([
-            'some_required_property' => 'because_its_needed'
+            'some_required_property' => 'because_its_needed',
         ]);
 
         $this->assertEquals('value_of_the_mutator', $example->some_mutator);
@@ -34,7 +34,7 @@ class PropertyContainerTest extends TestCase
     {
         $container = Example::make([
             'some_required_property' => 'because_its_needed',
-            'some_mutator'           => 'some_value'
+            'some_mutator'           => 'some_value',
         ]);
 
         $this->assertEquals('value_of_the_mutator', $container->some_mutator);
@@ -44,7 +44,7 @@ class PropertyContainerTest extends TestCase
     public function it_can_contain_macros()
     {
         $container = PropertyContainer::make([
-            'some_property' => 'some_value'
+            'some_property' => 'some_value',
         ]);
 
         $returnValue = null;
@@ -70,7 +70,7 @@ class PropertyContainerTest extends TestCase
     public function it_knows_if_a_macro_method_exists()
     {
         $container = PropertyContainer::make([
-            'some_property' => 'some_value'
+            'some_property' => 'some_value',
         ]);
 
         $this->assertFalse($container->hasMacro('someMacroMethod'));
@@ -86,7 +86,7 @@ class PropertyContainerTest extends TestCase
     public function it_returns_null_when_a_property_that_does_not_exist_is_been_accessed()
     {
         $container = PropertyContainer::make([
-            'some_property' => 'some_value'
+            'some_property' => 'some_value',
         ]);
 
         $this->assertNull($container->some_other_property);
@@ -99,7 +99,7 @@ class PropertyContainerTest extends TestCase
 
         try {
             $container = Example::make([
-                'some_property' => 'some_value'
+                'some_property' => 'some_value',
             ]);
         } catch (Exception $exception) {
             $this->assertInstanceOf(PropertyValidationException::class, $exception);
@@ -113,7 +113,7 @@ class PropertyContainerTest extends TestCase
     public function it_can_forget_properties()
     {
         $container = PropertyContainer::make([
-            'some_property' => 'some_value'
+            'some_property' => 'some_value',
         ]);
 
         $this->assertEquals('some_value', $container->some_property);
@@ -127,7 +127,7 @@ class PropertyContainerTest extends TestCase
     public function it_can_set_new_properties()
     {
         $container = PropertyContainer::make([
-            'some_property' => 'some_value'
+            'some_property' => 'some_value',
         ]);
 
         $this->assertNull($container->some_other_property);
@@ -142,7 +142,7 @@ class PropertyContainerTest extends TestCase
     {
         $container = PropertyContainer::make([
             'some_property'       => 'some_value',
-            'some_other_property' => 'some_other_value'
+            'some_other_property' => 'some_other_value',
         ]);
 
         $this->assertIsArray($container->toArray());
@@ -153,7 +153,7 @@ class PropertyContainerTest extends TestCase
     {
         $container = PropertyContainer::make([
             'some_property'       => 'some_value',
-            'some_other_property' => 'some_other_value'
+            'some_other_property' => 'some_other_value',
         ]);
 
         $this->assertJson($container->toJson());
@@ -163,11 +163,11 @@ class PropertyContainerTest extends TestCase
     public function it_can_merge_with_other_property_containers()
     {
         $containerA = PropertyContainer::make([
-            'some_property' => 'some_value'
+            'some_property' => 'some_value',
         ]);
 
         $containerB = PropertyContainer::make([
-            'some_other_property' => 'some_other_value'
+            'some_other_property' => 'some_other_value',
         ]);
 
         $this->assertTrue($containerA->has('some_property'));
@@ -184,7 +184,7 @@ class PropertyContainerTest extends TestCase
     {
         $example = Example::make([
             'some_required_property' => 'is-required-by-out-test-class',
-            'test_date'              => '1970-01-01'
+            'test_date'              => '1970-01-01',
         ]);
 
         $this->assertInstanceOf(Carbon::class, $example->test_date);
@@ -282,8 +282,8 @@ class PropertyContainerTest extends TestCase
 
         // Act
         new Example([
-            'some_required_property'                 => 'some random value',
-//            'some_required_nullable_string_property' => null,
+            'some_required_property' => 'some random value',
+            //            'some_required_nullable_string_property' => null,
         ]);
 
         // Assert
@@ -297,7 +297,8 @@ class PropertyContainerTest extends TestCase
 
         // Act
         new Example([
-            'some_email_property' => 'testing@email.com',
+            'some_required_property' => 'some random value',
+            'some_email_property'    => 'testing@email.com',
         ]);
 
         // Assert
@@ -312,7 +313,8 @@ class PropertyContainerTest extends TestCase
 
         // Act
         new Example([
-            'some_email_property' => 'testingemail.com',
+            'some_required_property' => 'some random value',
+            'some_email_property'    => 'testingemail.com',
         ]);
     }
 
@@ -341,6 +343,34 @@ class PropertyContainerTest extends TestCase
         new Example([
             'some_required_property'                 => 'some random value',
             'some_required_nullable_string_property' => 123,
+        ]);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_date_formatted_string()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property'    => 'some random value',
+            'some_date_format_property' => '2021-10-01',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accepts_an_invalid_date_formatted_string()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property'    => 'some random value',
+            'some_date_format_property' => '01-10-2021',
         ]);
     }
 }
@@ -372,8 +402,9 @@ class Example extends PropertyContainer
         'some_integer_property'                  => ['int'],
         'some_numeric_property'                  => ['numeric'],
         'some_date_property'                     => ['date'],
+        'some_date_format_property'              => ['date_format:Y-m-d'],
         'some_required_nullable_string_property' => ['required', 'nullable', 'string'],
-        'some_email_property'                    => ['email']
+        'some_email_property'                    => ['email'],
     ];
 
     /**
@@ -382,7 +413,7 @@ class Example extends PropertyContainer
      * @var array
      */
     protected $dateProperties = [
-        'test_date'
+        'test_date',
     ];
 
     /**

@@ -82,6 +82,25 @@ class PropertyValidation
     }
 
     /**
+     * The property must be a date (Parsable by Carbon) and have a correct format
+     *
+     * @param mixed $propertyValue
+     * @param array $arguments
+     *
+     * @return bool
+     */
+    public static function ruleDateFormat($propertyValue, $arguments)
+    {
+        try {
+            $date = Carbon::parse($propertyValue);
+
+            return $date->format($arguments[0]) == $propertyValue;
+        } catch (InvalidFormatException $exception) {
+            return false;
+        }
+    }
+
+    /**
      * The property must be a string
      *
      * @param mixed $propertyValue
@@ -109,19 +128,44 @@ class PropertyValidation
      * Runs a validation rule on a property, and throws an exception if the validation failed.
      *
      * @param $rule
+     * @param $arguments
      * @param $propertyName
      * @param $propertyValue
      */
-    public static function validate($rule, $propertyName, $propertyValue)
+    public static function validate($rule, $arguments, $propertyName, $propertyValue)
     {
-        $method = 'rule' . Str::toPascal($rule);
-
-        if ( ! method_exists(static::class, $method)) {
+        if ( ! static::hasRule($rule)) {
             throw new InvalidArgumentException(sprintf('No such rule: %s', $rule));
         }
 
-        if ( ! static::$method($propertyValue)) {
+        $method = static::getRuleMethod($rule);
+
+        if ( ! static::$method($propertyValue, $arguments)) {
             throw new PropertyValidationException($propertyName, $rule);
         }
+    }
+
+    /**
+     * Returns true if the rule exists
+     *
+     * @param $rule
+     *
+     * @return bool
+     */
+    public static function hasRule($rule): bool
+    {
+        return method_exists(static::class, static::getRuleMethod($rule));
+    }
+
+    /**
+     * Returns the associated rule method name
+     *
+     * @param $rule
+     *
+     * @return string
+     */
+    protected static function getRuleMethod($rule): string
+    {
+        return 'rule' . Str::toPascal($rule);
     }
 }

@@ -124,18 +124,38 @@ class PropertyContainer
 
         // Run all validation rules
         foreach ($validationRules as $validationRule) {
-            $this->runValidationRule($validationRule, $propertyName, $data[$propertyName]);
+            $ruleAndName = $this->getNameAndArgumentsFromRule($validationRule);
+
+            $this->runValidationRule($ruleAndName[0], $ruleAndName[1], $propertyName, $data[$propertyName]);
         }
+    }
+
+    /**
+     * Returns the name and given arguments from the validation rule entry
+     *
+     * @param $validationRuleEntry
+     *
+     * @return array
+     */
+    protected function getNameAndArgumentsFromRule($validationRuleEntry): array
+    {
+        $splitRule = explode(':', $validationRuleEntry);
+
+        $ruleName = $splitRule[0];
+        $ruleArguments = isset($splitRule[1]) ? explode(',', $splitRule[1]) : [];
+
+        return [$ruleName, $ruleArguments];
     }
 
     /**
      * Runs a single validation rule on a property, and throws and exception if the rule fails
      *
      * @param string|callable $validationRule
+     * @param array $validationRuleArguments
      * @param string $propertyName
      * @param mixed $propertyValue
      */
-    protected function runValidationRule($validationRule, $propertyName, $propertyValue)
+    protected function runValidationRule($validationRule, $validationRuleArguments, $propertyName, $propertyValue)
     {
         // The required and nullable validation rules is applied as the first validation rules if present
         // so we can simply skip them here
@@ -143,10 +163,10 @@ class PropertyContainer
             return;
         }
 
-        // If the validation rule given is not a callable, but a predefined rule
+        // If the validation rule given is a predefined rule
         // Then we run that validation rule
-        if ( ! is_callable($validationRule)) {
-            PropertyValidation::validate($validationRule, $propertyName, $propertyValue);
+        if (PropertyValidation::hasRule($validationRule)) {
+            PropertyValidation::validate($validationRule, $validationRuleArguments, $propertyName, $propertyValue);
 
             return;
         }

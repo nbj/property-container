@@ -134,7 +134,7 @@ class PropertyValidation
      */
     public static function ruleIn($propertyValue, $arguments)
     {
-        return in_array($propertyValue, $arguments);
+        return in_array($propertyValue, $arguments, false);
     }
 
     /**

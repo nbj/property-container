@@ -373,6 +373,62 @@ class PropertyContainerTest extends TestCase
             'some_date_format_property' => '01-10-2021',
         ]);
     }
+
+    /** @test */
+    public function it_accepts_a_valid_in_strings_property()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_in_rule_strings'   => 'a',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accepts_an_invalid_in_strings_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_in_rule_strings'   => 'd',
+        ]);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_in_int_property()
+    {
+        // Arrange
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_in_rule_int'       => 1,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accepts_an_invalid_in_int_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_in_rule_int'       => 4,
+        ]);
+    }
 }
 
 /**
@@ -405,6 +461,8 @@ class Example extends PropertyContainer
         'some_date_format_property'              => ['date_format:Y-m-d'],
         'some_required_nullable_string_property' => ['required', 'nullable', 'string'],
         'some_email_property'                    => ['email'],
+        'some_in_rule_strings'                   => ['in:a,b,c'],
+        'some_in_rule_int'                       => ['in:1,2,3'],
     ];
 
     /**

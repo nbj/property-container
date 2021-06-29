@@ -117,11 +117,24 @@ class PropertyValidation
      *
      * @param $propertyValue
      *
-     * @return mixed
+     * @return bool
      */
     public static function ruleEmail($propertyValue)
     {
-        return filter_var($propertyValue, FILTER_VALIDATE_EMAIL);
+        return (bool) filter_var($propertyValue, FILTER_VALIDATE_EMAIL);
+    }
+
+    /**
+     * The property must exist within the arguments
+     *
+     * @param mixed $propertyValue
+     * @param array $arguments
+     *
+     * @return bool
+     */
+    public static function ruleIn($propertyValue, $arguments)
+    {
+        return in_array($propertyValue, $arguments, false);
     }
 
     /**

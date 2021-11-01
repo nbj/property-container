@@ -28,6 +28,22 @@ class PropertyValidation
     }
 
     /**
+     * The property must be an uuid
+     *
+     * @param $propertyValue
+     *
+     * @return bool
+     */
+    public static function ruleUuid($propertyValue)
+    {
+        if (! is_string($propertyValue)) {
+            return false;
+        }
+
+        return (bool) preg_match('/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/', $propertyValue);
+    }
+
+    /**
      * The property must be integer
      *
      * @param mixed $propertyValue

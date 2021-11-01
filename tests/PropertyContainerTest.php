@@ -429,6 +429,71 @@ class PropertyContainerTest extends TestCase
             'some_in_rule_int'       => 4,
         ]);
     }
+
+    /** @test */
+    public function it_accepts_a_valid_uuid1_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_uuid_property'     => 'cbf62936-3b23-11ec-8d3d-0242ac130003',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_uuid4_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_uuid_property'     => '85536712-898a-49e7-85d6-2d948e956d25',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_uuid6_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_uuid_property'     => '189889e5-7d13-6b8d-9c78-a97a730c0085',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accepts_an_invalid_uuid_property_with_correct_format_but_illegal_chars()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_uuid_property'     => '________-____-____-____-____________',
+        ]);
+    }
+
+    /** @test */
+    public function it_does_not_accepts_an_invalid_uuid_property_with_wrong_format_with_legal_chars()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_uuid_property'     => 'cbf6293-63b2311e-c8d3d0242ac-130003',
+        ]);
+    }
 }
 
 /**
@@ -463,6 +528,7 @@ class Example extends PropertyContainer
         'some_email_property'                    => ['email'],
         'some_in_rule_strings'                   => ['in:a,b,c'],
         'some_in_rule_int'                       => ['in:1,2,3'],
+        'some_uuid_property'                     => ['uuid'],
     ];
 
     /**

@@ -30,6 +30,8 @@ class PropertyContainer
      * @see PropertyValidation for a list of validation rules
      *
      * @var array $validatedProperties
+     *
+     * @deprecated Use getRules() - Will be removed in a future major version
      */
     protected $validatedProperties = array();
 
@@ -46,6 +48,25 @@ class PropertyContainer
      * @var array $macros
      */
     protected static $macros = array();
+
+    /**
+     * Returns the rules which should be applied to the property container.
+     * This is only used when inheriting from PropertyContainer
+     *
+     * Structure:
+     *  [
+     *      'property_name' => ['required', 'numeric'],
+     *  ]
+     * Properties are only validated if present, unless the required validation rule is applied.
+     *
+     * Override this method to apply validation rules.
+     *
+     * @return array
+     */
+    public function getRules()
+    {
+        return $this->validatedProperties;
+    }
 
     /**
      * Adds a closure as a method that is callable on the instance
@@ -89,7 +110,7 @@ class PropertyContainer
      */
     public function fill(array $data)
     {
-        foreach ($this->validatedProperties as $propertyName => $validationRules) {
+        foreach ($this->getRules() as $propertyName => $validationRules) {
             $this->validateProperty($propertyName, $validationRules, $data);
         }
 

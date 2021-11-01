@@ -504,32 +504,35 @@ class PropertyContainerTest extends TestCase
 class Example extends PropertyContainer
 {
     /**
-     * Stores a list of properties, and validation rules to apply - This is only used when inheriting from PropertyContainer
+     * Returns the rules which should be applied to the property container.
+     * This is only used when inheriting from PropertyContainer
      *
      * Structure:
      *  [
      *      'property_name' => ['required', 'numeric'],
      *  ]
-     *
      * Properties are only validated if present, unless the required validation rule is applied.
      *
-     * @see PropertyValidation for a list of validation rules
+     * Override this method to apply validation rules.
      *
-     * @var array $validatedProperties
+     * @return array
      */
-    protected $validatedProperties = [
-        'some_required_property'                 => ['required'],
-        'some_not_null_property'                 => ['notNull'],
-        'some_integer_property'                  => ['int'],
-        'some_numeric_property'                  => ['numeric'],
-        'some_date_property'                     => ['date'],
-        'some_date_format_property'              => ['date_format:Y-m-d'],
-        'some_required_nullable_string_property' => ['required', 'nullable', 'string'],
-        'some_email_property'                    => ['email'],
-        'some_in_rule_strings'                   => ['in:a,b,c'],
-        'some_in_rule_int'                       => ['in:1,2,3'],
-        'some_uuid_property'                     => ['uuid'],
-    ];
+    public function getRules()
+    {
+        return [
+            'some_required_property'                 => ['required'],
+            'some_not_null_property'                 => ['notNull'],
+            'some_integer_property'                  => ['int'],
+            'some_numeric_property'                  => ['numeric'],
+            'some_date_property'                     => ['date'],
+            'some_date_format_property'              => ['date_format:Y-m-d'],
+            'some_required_nullable_string_property' => ['required', 'nullable', 'string'],
+            'some_email_property'                    => ['email'],
+            'some_in_rule_strings'                   => ['in:a,b,c'],
+            'some_in_rule_int'                       => ['in:1,2,3'],
+            'some_uuid_property'                     => ['uuid'],
+        ];
+    }
 
     /**
      * List of all properties that should be converted to Carbon instances

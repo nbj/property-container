@@ -507,6 +507,19 @@ class PropertyContainerTest extends TestCase
         // Assert
         $this->assertTrue(true);
     }
+
+    /** @test */
+    public function it_does_not_accept_an_invalid_value_for_a_callable_rule()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_callable_rule'     => 'hoho',
+        ]);
+    }
 }
 
 /**

@@ -145,9 +145,7 @@ class PropertyContainer
 
         // Run all validation rules
         foreach ($validationRules as $validationRule) {
-            $ruleAndName = $this->getNameAndArgumentsFromRule($validationRule);
-
-            $this->runValidationRule($ruleAndName[0], $ruleAndName[1], $propertyName, $data[$propertyName]);
+            $this->runValidationRule($validationRule, $propertyName, $data[$propertyName]);
         }
     }
 
@@ -172,11 +170,10 @@ class PropertyContainer
      * Runs a single validation rule on a property, and throws and exception if the rule fails
      *
      * @param string|callable $validationRule
-     * @param array $validationRuleArguments
      * @param string $propertyName
      * @param mixed $propertyValue
      */
-    protected function runValidationRule($validationRule, $validationRuleArguments, $propertyName, $propertyValue)
+    protected function runValidationRule($validationRule, $propertyName, $propertyValue)
     {
         // The required and nullable validation rules is applied as the first validation rules if present
         // so we can simply skip them here
@@ -184,18 +181,22 @@ class PropertyContainer
             return;
         }
 
-        // If the validation rule given is a predefined rule
-        // Then we run that validation rule
-        if (PropertyValidation::hasRule($validationRule)) {
-            PropertyValidation::validate($validationRule, $validationRuleArguments, $propertyName, $propertyValue);
+        // If the validation rule is a custom callable, then run it
+        // and if it returns false then fail the validation step
+        if ( is_callable($validationRule)) {
+            if (! $validationRule($propertyValue)) {
+                throw new PropertyValidationException($propertyName, $validationRule);
+            }
 
             return;
         }
 
-        // If the validation rule is a custom callable, then run it
-        // and if it returns false then fail the validation step
-        if ( ! $validationRule($propertyValue)) {
-            throw new PropertyValidationException($propertyName, $validationRule);
+        [$validationRuleName, $validationRuleArguments] = $this->getNameAndArgumentsFromRule($validationRule);
+
+        // If the validation rule given is a predefined rule
+        // Then we run that validation rule
+        if (PropertyValidation::hasRule($validationRuleName)) {
+            PropertyValidation::validate($validationRuleName, $validationRuleArguments, $propertyName, $propertyValue);
         }
     }
 

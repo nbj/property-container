@@ -494,6 +494,19 @@ class PropertyContainerTest extends TestCase
             'some_uuid_property'     => 'cbf6293-63b2311e-c8d3d0242ac-130003',
         ]);
     }
+
+    /** @test */
+    public function it_accepts_a_valid_value_for_a_callable_rule()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_callable_rule'     => 1,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
 }
 
 /**
@@ -531,6 +544,7 @@ class Example extends PropertyContainer
             'some_in_rule_strings'                   => ['in:a,b,c'],
             'some_in_rule_int'                       => ['in:1,2,3'],
             'some_uuid_property'                     => ['uuid'],
+            'some_callable_rule'                     => [function ($value) {return $value === 1;}],
         ];
     }
 

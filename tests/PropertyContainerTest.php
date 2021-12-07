@@ -403,6 +403,136 @@ class PropertyContainerTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_accepts_invalid_gt_string_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_gt_rule_int'       => "test",
+        ]);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_gt_float_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_gt_rule_int'       => 1.1,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_gt_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_gt_rule_int'       => 1,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_invalid_gt_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_gt_rule_int'       => 0,
+        ]);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_gte_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_gte_rule_int'       => 0,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_invalid_gte_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_gte_rule_int'       => -1,
+        ]);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_lt_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_lt_rule_int'       => -1,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_invalid_lt_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_lt_rule_int'       => 0,
+        ]);
+    }
+
+    /** @test */
+    public function it_accepts_a_valid_lte_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_lte_rule_int'       => 0,
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_invalid_lte_property()
+    {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_lte_rule_int'       => 1,
+        ]);
+    }
+
+    /** @test */
     public function it_accepts_a_valid_in_int_property()
     {
         // Arrange
@@ -556,6 +686,10 @@ class Example extends PropertyContainer
             'some_email_property'                    => ['email'],
             'some_in_rule_strings'                   => ['in:a,b,c'],
             'some_in_rule_int'                       => ['in:1,2,3'],
+            'some_gt_rule_int'                      => ['gt:0'],
+            'some_gte_rule_int'                      => ['gte:0'],
+            'some_lt_rule_int'                      => ['lt:0'],
+            'some_lte_rule_int'                      => ['lte:0'],
             'some_uuid_property'                     => ['uuid'],
             'some_callable_rule'                     => [function ($value) {return $value === 1;}],
         ];

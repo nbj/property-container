@@ -18,7 +18,7 @@ class PropertyValidation
      * @param  mixed  $arguments
      * @return bool
      */
-    public static function ruleGt($propertyValue, $arguments)
+    public static function ruleGreaterThan($propertyValue, $arguments)
     {
         $comparedToValue = $arguments[0];
 
@@ -36,7 +36,7 @@ class PropertyValidation
      * @param  mixed  $arguments
      * @return bool
      */
-    public static function ruleGte($propertyValue, $arguments)
+    public static function ruleGreaterThanEqual($propertyValue, $arguments)
     {
         $comparedToValue = $arguments[0];
 
@@ -54,7 +54,7 @@ class PropertyValidation
      * @param  mixed  $arguments
      * @return bool
      */
-    public static function ruleLt($propertyValue, $arguments)
+    public static function ruleLessThan($propertyValue, $arguments)
     {
         $comparedToValue = $arguments[0];
 
@@ -72,7 +72,7 @@ class PropertyValidation
      * @param  mixed  $arguments
      * @return bool
      */
-    public static function ruleLte($propertyValue, $arguments)
+    public static function ruleLessthanEqual($propertyValue, $arguments)
     {
         $comparedToValue = $arguments[0];
 

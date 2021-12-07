@@ -72,7 +72,7 @@ class PropertyValidation
      * @param  mixed  $arguments
      * @return bool
      */
-    public static function ruleLessthanEqual($propertyValue, $arguments)
+    public static function ruleLessThanEqual($propertyValue, $arguments)
     {
         $comparedToValue = $arguments[0];
 

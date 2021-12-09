@@ -12,6 +12,78 @@ use Carbon\Exceptions\InvalidFormatException;
 class PropertyValidation
 {
     /**
+     * Validate that an attribute is greater than another attribute.
+     *
+     * @param  mixed  $propertyValue
+     * @param  mixed  $arguments
+     * @return bool
+     */
+    public static function ruleGreaterThan($propertyValue, $arguments)
+    {
+        $comparedToValue = $arguments[0];
+
+        if (is_numeric($propertyValue) and is_numeric($comparedToValue)) {
+            return $propertyValue > $comparedToValue;
+        }
+
+        return false;
+    }
+
+    /**
+     * Validate that an attribute is equal or greater than another attribute.
+     *
+     * @param  mixed  $propertyValue
+     * @param  mixed  $arguments
+     * @return bool
+     */
+    public static function ruleGreaterThanEqual($propertyValue, $arguments)
+    {
+        $comparedToValue = $arguments[0];
+
+        if (is_numeric($propertyValue) and is_numeric($comparedToValue)) {
+            return $propertyValue >= $comparedToValue;
+        }
+
+        return false;
+    }
+
+    /**
+     * Validate that an attribute is less than another attribute.
+     *
+     * @param  mixed  $propertyValue
+     * @param  mixed  $arguments
+     * @return bool
+     */
+    public static function ruleLessThan($propertyValue, $arguments)
+    {
+        $comparedToValue = $arguments[0];
+
+        if (is_numeric($propertyValue) and is_numeric($comparedToValue)) {
+            return $propertyValue < $comparedToValue;
+        }
+
+        return false;
+    }
+
+    /**
+     * Validate that an attribute is less than or equal to another attribute.
+     *
+     * @param  mixed  $propertyValue
+     * @param  mixed  $arguments
+     * @return bool
+     */
+    public static function ruleLessThanEqual($propertyValue, $arguments)
+    {
+        $comparedToValue = $arguments[0];
+
+        if (is_numeric($propertyValue) and is_numeric($comparedToValue)) {
+            return $propertyValue <= $comparedToValue;
+        }
+
+        return false;
+    }
+
+    /**
      * The property must be numeric
      *
      * @param mixed $propertyValue

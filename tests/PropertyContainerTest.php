@@ -650,6 +650,31 @@ class PropertyContainerTest extends TestCase
             'some_callable_rule'     => 'hoho',
         ]);
     }
+
+    /** @test */
+    public function it_accepts_a_valid_not_empty_property()
+    {
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_not_empty_rule'    => 'Not an empty property',
+        ]);
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_does_not_accept_not_empty_property() {
+        // Arrange
+        $this->expectException(PropertyValidationException::class);
+
+        // Act
+        new Example([
+            'some_required_property' => 'some random value',
+            'some_not_empty_rule'    => '',
+        ]);
+    }
 }
 
 /**
@@ -692,6 +717,7 @@ class Example extends PropertyContainer
             'some_lte_rule_int'                      => ['lessThanEqual:0'],
             'some_uuid_property'                     => ['uuid'],
             'some_callable_rule'                     => [function ($value) {return $value === 1;}],
+            'some_not_empty_rule'                    => ['notEmpty'],
         ];
     }
 

@@ -226,6 +226,18 @@ class PropertyValidation
     }
 
     /**
+     * The property must not be empty
+     *
+     * @param mixed $propertyValue
+     *
+     * @return bool
+     */
+    public static function ruleNotEmpty($propertyValue)
+    {
+        return ! empty($propertyValue);
+    }
+
+    /**
      * Runs a validation rule on a property, and throws an exception if the validation failed.
      *
      * @param $rule
